@@ -18,11 +18,11 @@
                 "layer" : "sim_march8_current_bldgs"
             }
         },
-"script_file" : "Source/data/script/script_ssi_march_9_1035pm.xlsx",
+"script_file" : "data/script/script_ssi.xlsx",
 "script_file_old" : "Source/data/script/script_ssi_march_8_535pm.xlsx",
-"future_script" : "Source/data/FutureBldgs_Tama_38.xlsx",
-"Buildings_ref":"Source/data/Buildings_flat_march_10.xlsx",
-"bldg_path" : "Source/data/bldg/",
+"future_script" : "data/FutureBldgs_Tama_38.xlsx",
+"Buildings_ref":"data/Buildings_flat_march_10.xlsx",
+"bldg_path" : "data/bldg/",
 "Agents": "Source/Agents_8pm.xlsx",
 "cim_folder":"simulationID/",
 "Google Drive Prepath" : "content/drive/My Drive/BatYam NY DRIVE/Simulations/March 4 2020 After NYC/"
