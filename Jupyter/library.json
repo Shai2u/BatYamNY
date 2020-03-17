@@ -4,18 +4,24 @@
             "old_bldgs":
             {
                 "package" : "Source/data/GIS/BaseLayers.gpkg",
-                "layer" : "bldgs_renewal_2020"
+                "layer" : "bldgs_renewal_2020",
+                "database":"base_layers",
+                "feature": "bldgs_renewal_2020"
             },
             "old_bldgs_background":
             {
                 "package" : "Source/data/GIS/BaseLayers.gpkg",
-                "layer" : "bldgs_nonrenwal2020"
+                "layer" : "bldgs_nonrenwal2020",
+                "database":"base_layers",
+                "feature" : "bldgs_nonrenewal_2020"
+
             }
             ,
             "updated_bldg":
             {
                 "package" : "Source/data/GIS/sim_updated.gpkg",
-                "layer" : "sim_march8_current_bldgs"
+                "layer" : "sim_march8_current_bldgs",
+                "database":"sim_updated"
             }
         },
 "script_file" : "data/script/script_ssi.xlsx",
