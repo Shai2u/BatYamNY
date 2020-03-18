@@ -43,7 +43,7 @@
             var map_c3304d2c71b34d9ba19417c19655d592 = L.map(
                 "map_c3304d2c71b34d9ba19417c19655d592",
                 {
-                    center: [32.02388939038652, 34.742998508225185],
+                    center: [32.030224505869135, 34.74304161570299],
                     crs: L.CRS.EPSG3857,
                     zoom: 20,
                     zoomControl: true,
@@ -500,6 +500,314 @@
         
     
         geo_json_4490e616bb48403085ec907a61a75ebe.bindTooltip(
+            function(layer){
+            // Convert non-primitive to String.
+            let handleObject = (feature)=>typeof(feature)=='object' ? JSON.stringify(feature) : feature;
+            let fields = ["bld_id", "laeving", "new comers", "staying", "New Total Residence", "Old Total Residence", "Percent Left", "Percent New Comers", "Type of Project", "TotalUnits", "TotalFloors", "AvrgTotaalArea", "newMaintenace", "Purchase", "Rent", "address_text"];
+            let aliases = ["Building Code:", "Leaving:", "Number of new comers:", "Number of staying:", "New Total Residence:", "Old Total Residence:", "Percent Left:", "Percent new comers:", "Type of project:", "Units:", "Floors:", "Average Area:", "Maintenance Cost:", "Purchase:", "Rent and Maintence:", "Address:"];
+            return '<table>' +
+            String(
+                fields.map(
+                columnname=>
+                    `<tr style="text-align: left;">
+                    <th style="padding: 4px; padding-right: 10px;">
+                        ${aliases[fields.indexOf(columnname)]
+                        }
+                    </th>
+                    
+                    <td style="padding: 4px;">${handleObject(layer.feature.properties[columnname])
+                    }</td></tr>`
+                ).join(''))
+                +'</table>'
+            }, {"sticky": true});
+        
+    
+        function geo_json_03c63ed073d642c4a2577478132bea88_styler(feature) {
+            switch(feature.id) {
+                default:
+                    return {"fillColor": "#ff0000", "fillOpacity": 0.75, "weight": 1};
+            }
+        }
+        function geo_json_03c63ed073d642c4a2577478132bea88_onEachFeature(feature, layer) {
+            layer.on({
+                click: function(e) {
+                    map_c3304d2c71b34d9ba19417c19655d592.fitBounds(e.target.getBounds());
+                }
+            });
+        };
+        var geo_json_03c63ed073d642c4a2577478132bea88 = L.geoJson(null, {
+                onEachFeature: geo_json_03c63ed073d642c4a2577478132bea88_onEachFeature,
+            
+                style: geo_json_03c63ed073d642c4a2577478132bea88_styler,
+        }).addTo(map_c3304d2c71b34d9ba19417c19655d592);
+            geo_json_03c63ed073d642c4a2577478132bea88.addData({"features": [{"geometry": {"coordinates": [[[34.74347221415634, 32.02904134578231], [34.74336508220516, 32.029079193294834], [34.74342963711341, 32.02922542399136], [34.74349628601423, 32.02920872162536], [34.743497879865714, 32.029210268998945], [34.743501753260766, 32.02921989268568], [34.743593678393246, 32.029197052865605], [34.743587915804405, 32.02918454394495], [34.74358796407173, 32.02918397266187], [34.74374284337284, 32.02913967944423], [34.74369869589432, 32.02902786400579], [34.743679145015484, 32.02903347949614], [34.74367512213226, 32.029026440872684], [34.74365949122251, 32.029029282252985], [34.74364863718022, 32.029018702111294], [34.743560756198654, 32.02901501759057], [34.743536921979356, 32.02902130379496], [34.74353429781758, 32.02901417956009], [34.74346867723867, 32.02903296887279], [34.74347221415634, 32.02904134578231]]], "type": "Polygon"}, "id": "0", "properties": {"AgentBldAdd": "210_11", "AvrgTotaalArea": 100, "New Total Residence": 20, "Old Total Residence": 12, "Percent Left": 0.3333333333333333, "Percent New Comers": 0.6, "Purchase": 2184451.83, "Rent": 7330.000000000001, "TotalFloors": 6, "TotalUnits": 20, "Type of Project": "\u05ea\u05de\u05f4\u05d0 38/1", "address_text": "\u05d4\u05e8\u05e6\u05dc 11, \u05d1\u05ea \u05d9\u05dd", "bld_address": "210_11", "bld_id": "210_11", "laeving": 4, "new comers": 12, "newMaintenace": 180, "staying": 8}, "type": "Feature"}], "type": "FeatureCollection"});
+        
+    
+        geo_json_03c63ed073d642c4a2577478132bea88.bindTooltip(
+            function(layer){
+            // Convert non-primitive to String.
+            let handleObject = (feature)=>typeof(feature)=='object' ? JSON.stringify(feature) : feature;
+            let fields = ["bld_id", "laeving", "new comers", "staying", "New Total Residence", "Old Total Residence", "Percent Left", "Percent New Comers", "Type of Project", "TotalUnits", "TotalFloors", "AvrgTotaalArea", "newMaintenace", "Purchase", "Rent", "address_text"];
+            let aliases = ["Building Code:", "Leaving:", "Number of new comers:", "Number of staying:", "New Total Residence:", "Old Total Residence:", "Percent Left:", "Percent new comers:", "Type of project:", "Units:", "Floors:", "Average Area:", "Maintenance Cost:", "Purchase:", "Rent and Maintence:", "Address:"];
+            return '<table>' +
+            String(
+                fields.map(
+                columnname=>
+                    `<tr style="text-align: left;">
+                    <th style="padding: 4px; padding-right: 10px;">
+                        ${aliases[fields.indexOf(columnname)]
+                        }
+                    </th>
+                    
+                    <td style="padding: 4px;">${handleObject(layer.feature.properties[columnname])
+                    }</td></tr>`
+                ).join(''))
+                +'</table>'
+            }, {"sticky": true});
+        
+    
+        function geo_json_00c1fe7c41ae404a94bfba2eacb7ec07_styler(feature) {
+            switch(feature.id) {
+                default:
+                    return {"fillColor": "#ff0000", "fillOpacity": 0.75, "weight": 1};
+            }
+        }
+        function geo_json_00c1fe7c41ae404a94bfba2eacb7ec07_onEachFeature(feature, layer) {
+            layer.on({
+                click: function(e) {
+                    map_c3304d2c71b34d9ba19417c19655d592.fitBounds(e.target.getBounds());
+                }
+            });
+        };
+        var geo_json_00c1fe7c41ae404a94bfba2eacb7ec07 = L.geoJson(null, {
+                onEachFeature: geo_json_00c1fe7c41ae404a94bfba2eacb7ec07_onEachFeature,
+            
+                style: geo_json_00c1fe7c41ae404a94bfba2eacb7ec07_styler,
+        }).addTo(map_c3304d2c71b34d9ba19417c19655d592);
+            geo_json_00c1fe7c41ae404a94bfba2eacb7ec07.addData({"features": [{"geometry": {"coordinates": [[[34.7415148524004, 32.024231039199655], [34.74166160526338, 32.02419915234475], [34.74164841411333, 32.02415947668272], [34.74167451734017, 32.02415416819393], [34.74168557913069, 32.024196838167505], [34.741775180054894, 32.02417795177525], [34.741762717763834, 32.0241334754482], [34.74180504550265, 32.02412522404501], [34.74181681512691, 32.02416729617309], [34.74196143842809, 32.02413840328544], [34.74192414788896, 32.02398576135993], [34.74170472999425, 32.0240323938014], [34.74171507193384, 32.024078063231265], [34.741672744209076, 32.02408631460459], [34.741660278960424, 32.02404243867339], [34.74147472541593, 32.02408198929519], [34.7415148524004, 32.024231039199655]]], "type": "Polygon"}, "id": "0", "properties": {"AgentBldAdd": "216_3", "AvrgTotaalArea": 90, "New Total Residence": 32, "Old Total Residence": 18, "Percent Left": 0.2777777777777778, "Percent New Comers": 0.59375, "Purchase": 2046952.6110000003, "Rent": 6318.000000000001, "TotalFloors": 6, "TotalUnits": 32, "Type of Project": "\u05ea\u05de\u05f4\u05d0 38/1", "address_text": "\u05de\u05e1\u05e8\u05d9\u05e7 3, \u05d1\u05ea \u05d9\u05dd", "bld_address": "216_3", "bld_id": "216_3", "laeving": 5, "new comers": 19, "newMaintenace": 180, "staying": 13}, "type": "Feature"}], "type": "FeatureCollection"});
+        
+    
+        geo_json_00c1fe7c41ae404a94bfba2eacb7ec07.bindTooltip(
+            function(layer){
+            // Convert non-primitive to String.
+            let handleObject = (feature)=>typeof(feature)=='object' ? JSON.stringify(feature) : feature;
+            let fields = ["bld_id", "laeving", "new comers", "staying", "New Total Residence", "Old Total Residence", "Percent Left", "Percent New Comers", "Type of Project", "TotalUnits", "TotalFloors", "AvrgTotaalArea", "newMaintenace", "Purchase", "Rent", "address_text"];
+            let aliases = ["Building Code:", "Leaving:", "Number of new comers:", "Number of staying:", "New Total Residence:", "Old Total Residence:", "Percent Left:", "Percent new comers:", "Type of project:", "Units:", "Floors:", "Average Area:", "Maintenance Cost:", "Purchase:", "Rent and Maintence:", "Address:"];
+            return '<table>' +
+            String(
+                fields.map(
+                columnname=>
+                    `<tr style="text-align: left;">
+                    <th style="padding: 4px; padding-right: 10px;">
+                        ${aliases[fields.indexOf(columnname)]
+                        }
+                    </th>
+                    
+                    <td style="padding: 4px;">${handleObject(layer.feature.properties[columnname])
+                    }</td></tr>`
+                ).join(''))
+                +'</table>'
+            }, {"sticky": true});
+        
+    
+        function geo_json_bfba660886ac43458184e9209c359c02_styler(feature) {
+            switch(feature.id) {
+                default:
+                    return {"fillColor": "#ff0000", "fillOpacity": 0.75, "weight": 1};
+            }
+        }
+        function geo_json_bfba660886ac43458184e9209c359c02_onEachFeature(feature, layer) {
+            layer.on({
+                click: function(e) {
+                    map_c3304d2c71b34d9ba19417c19655d592.fitBounds(e.target.getBounds());
+                }
+            });
+        };
+        var geo_json_bfba660886ac43458184e9209c359c02 = L.geoJson(null, {
+                onEachFeature: geo_json_bfba660886ac43458184e9209c359c02_onEachFeature,
+            
+                style: geo_json_bfba660886ac43458184e9209c359c02_styler,
+        }).addTo(map_c3304d2c71b34d9ba19417c19655d592);
+            geo_json_bfba660886ac43458184e9209c359c02.addData({"features": [{"geometry": {"coordinates": [[[34.74224637444626, 32.0238001923257], [34.74225252698947, 32.02370470679733], [34.742280850119464, 32.02370739817282], [34.74228452579778, 32.023630993480936], [34.742057610145615, 32.023616269624654], [34.74204761805175, 32.023615459282624], [34.742042296977544, 32.023670393988056], [34.741991488976396, 32.02366790984876], [34.741993101129026, 32.023641993781524], [34.74183013507419, 32.023634958487705], [34.74182449039157, 32.0237141581281], [34.7418608737585, 32.02371558894589], [34.7418562001697, 32.0237800370173], [34.74202092268095, 32.02378705517507], [34.74202171984772, 32.02375399094978], [34.74204995403747, 32.023754696515695], [34.742048625086404, 32.02378936968331], [34.74224637444626, 32.0238001923257]]], "type": "Polygon"}, "id": "0", "properties": {"AgentBldAdd": "215_18", "AvrgTotaalArea": 95, "New Total Residence": 30, "Old Total Residence": 18, "Percent Left": 0.5, "Percent New Comers": 0.7, "Purchase": 1999097.452916667, "Rent": 5718.500000000001, "TotalFloors": 7, "TotalUnits": 30, "Type of Project": "\u05ea\u05de\u05f4\u05d0 38/1", "address_text": "\u05e1\u05d5\u05e7\u05d5\u05dc\u05d5\u05d1 18, \u05d1\u05ea \u05d9\u05dd", "bld_address": "215_18", "bld_id": "215_18", "laeving": 9, "new comers": 21, "newMaintenace": 180, "staying": 9}, "type": "Feature"}], "type": "FeatureCollection"});
+        
+    
+        geo_json_bfba660886ac43458184e9209c359c02.bindTooltip(
+            function(layer){
+            // Convert non-primitive to String.
+            let handleObject = (feature)=>typeof(feature)=='object' ? JSON.stringify(feature) : feature;
+            let fields = ["bld_id", "laeving", "new comers", "staying", "New Total Residence", "Old Total Residence", "Percent Left", "Percent New Comers", "Type of Project", "TotalUnits", "TotalFloors", "AvrgTotaalArea", "newMaintenace", "Purchase", "Rent", "address_text"];
+            let aliases = ["Building Code:", "Leaving:", "Number of new comers:", "Number of staying:", "New Total Residence:", "Old Total Residence:", "Percent Left:", "Percent new comers:", "Type of project:", "Units:", "Floors:", "Average Area:", "Maintenance Cost:", "Purchase:", "Rent and Maintence:", "Address:"];
+            return '<table>' +
+            String(
+                fields.map(
+                columnname=>
+                    `<tr style="text-align: left;">
+                    <th style="padding: 4px; padding-right: 10px;">
+                        ${aliases[fields.indexOf(columnname)]
+                        }
+                    </th>
+                    
+                    <td style="padding: 4px;">${handleObject(layer.feature.properties[columnname])
+                    }</td></tr>`
+                ).join(''))
+                +'</table>'
+            }, {"sticky": true});
+        
+    
+        function geo_json_d3d8d26187ca4396b01cda8cb8ba3798_styler(feature) {
+            switch(feature.id) {
+                default:
+                    return {"fillColor": "#ff0000", "fillOpacity": 0.75, "weight": 1};
+            }
+        }
+        function geo_json_d3d8d26187ca4396b01cda8cb8ba3798_onEachFeature(feature, layer) {
+            layer.on({
+                click: function(e) {
+                    map_c3304d2c71b34d9ba19417c19655d592.fitBounds(e.target.getBounds());
+                }
+            });
+        };
+        var geo_json_d3d8d26187ca4396b01cda8cb8ba3798 = L.geoJson(null, {
+                onEachFeature: geo_json_d3d8d26187ca4396b01cda8cb8ba3798_onEachFeature,
+            
+                style: geo_json_d3d8d26187ca4396b01cda8cb8ba3798_styler,
+        }).addTo(map_c3304d2c71b34d9ba19417c19655d592);
+            geo_json_d3d8d26187ca4396b01cda8cb8ba3798.addData({"features": [{"geometry": {"coordinates": [[[34.74174642271861, 32.023080648713886], [34.741739721334056, 32.02318930600529], [34.74182998968414, 32.02319381637412], [34.741828599117866, 32.023203403099124], [34.74219510069368, 32.02322155358896], [34.74219530684263, 32.023209141117064], [34.74229720188797, 32.02321415027304], [34.7423058779348, 32.02311220178822], [34.74221076680261, 32.02310674216047], [34.74221216463401, 32.02307194565482], [34.74182893560675, 32.02305599041504], [34.741830237956556, 32.0230851355359], [34.74174642271861, 32.023080648713886]]], "type": "Polygon"}, "id": "0", "properties": {"AgentBldAdd": "215_24", "AvrgTotaalArea": 86, "New Total Residence": 30, "Old Total Residence": 18, "Percent Left": 0.3333333333333333, "Percent New Comers": 0.6, "Purchase": 1839204.3706666671, "Rent": 6329.000000000001, "TotalFloors": 7, "TotalUnits": 30, "Type of Project": "\u05ea\u05de\u05f4\u05d0 38/1", "address_text": "\u05e1\u05d5\u05e7\u05d5\u05dc\u05d5\u05d1 24, \u05d1\u05ea \u05d9\u05dd", "bld_address": "215_24", "bld_id": "215_24", "laeving": 6, "new comers": 18, "newMaintenace": 180, "staying": 12}, "type": "Feature"}], "type": "FeatureCollection"});
+        
+    
+        geo_json_d3d8d26187ca4396b01cda8cb8ba3798.bindTooltip(
+            function(layer){
+            // Convert non-primitive to String.
+            let handleObject = (feature)=>typeof(feature)=='object' ? JSON.stringify(feature) : feature;
+            let fields = ["bld_id", "laeving", "new comers", "staying", "New Total Residence", "Old Total Residence", "Percent Left", "Percent New Comers", "Type of Project", "TotalUnits", "TotalFloors", "AvrgTotaalArea", "newMaintenace", "Purchase", "Rent", "address_text"];
+            let aliases = ["Building Code:", "Leaving:", "Number of new comers:", "Number of staying:", "New Total Residence:", "Old Total Residence:", "Percent Left:", "Percent new comers:", "Type of project:", "Units:", "Floors:", "Average Area:", "Maintenance Cost:", "Purchase:", "Rent and Maintence:", "Address:"];
+            return '<table>' +
+            String(
+                fields.map(
+                columnname=>
+                    `<tr style="text-align: left;">
+                    <th style="padding: 4px; padding-right: 10px;">
+                        ${aliases[fields.indexOf(columnname)]
+                        }
+                    </th>
+                    
+                    <td style="padding: 4px;">${handleObject(layer.feature.properties[columnname])
+                    }</td></tr>`
+                ).join(''))
+                +'</table>'
+            }, {"sticky": true});
+        
+    
+        function geo_json_fa7dce54747b454a937382887e92fc6c_styler(feature) {
+            switch(feature.id) {
+                default:
+                    return {"fillColor": "#ff0000", "fillOpacity": 0.75, "weight": 1};
+            }
+        }
+        function geo_json_fa7dce54747b454a937382887e92fc6c_onEachFeature(feature, layer) {
+            layer.on({
+                click: function(e) {
+                    map_c3304d2c71b34d9ba19417c19655d592.fitBounds(e.target.getBounds());
+                }
+            });
+        };
+        var geo_json_fa7dce54747b454a937382887e92fc6c = L.geoJson(null, {
+                onEachFeature: geo_json_fa7dce54747b454a937382887e92fc6c_onEachFeature,
+            
+                style: geo_json_fa7dce54747b454a937382887e92fc6c_styler,
+        }).addTo(map_c3304d2c71b34d9ba19417c19655d592);
+            geo_json_fa7dce54747b454a937382887e92fc6c.addData({"features": [{"geometry": {"coordinates": [[[34.742346625352944, 32.02643376559818], [34.74234942756247, 32.0263535199932], [34.74232679366679, 32.02635208394957], [34.742330407332936, 32.026280348563326], [34.742239043419765, 32.026274828947116], [34.74223808969483, 32.02629068859515], [34.742187714307505, 32.02628834065465], [34.74218735914642, 32.02629582512312], [34.74210910188673, 32.02629238374063], [34.7421056122895, 32.0263548714602], [34.74212333576443, 32.02635533443657], [34.742119204711706, 32.02643686584065], [34.742132818391454, 32.026437534193384], [34.74212827495966, 32.02652975108193], [34.742308865413484, 32.0265366186954], [34.74231177509248, 32.02648537587715], [34.74231944494478, 32.02648567436832], [34.742321244281186, 32.026457715465106], [34.742312731535044, 32.02645739424025], [34.742314758582744, 32.02643317000969], [34.742346625352944, 32.02643376559818]]], "type": "Polygon"}, "id": "0", "properties": {"AgentBldAdd": "220_4", "AvrgTotaalArea": 93, "New Total Residence": 30, "Old Total Residence": 16, "Percent Left": 0.0625, "Percent New Comers": 0.5, "Purchase": 1955004.4569000003, "Rent": 6829.500000000001, "TotalFloors": 7, "TotalUnits": 30, "Type of Project": "\u05ea\u05de\u05f4\u05d0 38/1", "address_text": "\u05e8\u05d5\u05d8\u05e9\u05d9\u05dc\u05d3 4, \u05d1\u05ea \u05d9\u05dd", "bld_address": "220_4", "bld_id": "220_4", "laeving": 1, "new comers": 15, "newMaintenace": 180, "staying": 15}, "type": "Feature"}], "type": "FeatureCollection"});
+        
+    
+        geo_json_fa7dce54747b454a937382887e92fc6c.bindTooltip(
+            function(layer){
+            // Convert non-primitive to String.
+            let handleObject = (feature)=>typeof(feature)=='object' ? JSON.stringify(feature) : feature;
+            let fields = ["bld_id", "laeving", "new comers", "staying", "New Total Residence", "Old Total Residence", "Percent Left", "Percent New Comers", "Type of Project", "TotalUnits", "TotalFloors", "AvrgTotaalArea", "newMaintenace", "Purchase", "Rent", "address_text"];
+            let aliases = ["Building Code:", "Leaving:", "Number of new comers:", "Number of staying:", "New Total Residence:", "Old Total Residence:", "Percent Left:", "Percent new comers:", "Type of project:", "Units:", "Floors:", "Average Area:", "Maintenance Cost:", "Purchase:", "Rent and Maintence:", "Address:"];
+            return '<table>' +
+            String(
+                fields.map(
+                columnname=>
+                    `<tr style="text-align: left;">
+                    <th style="padding: 4px; padding-right: 10px;">
+                        ${aliases[fields.indexOf(columnname)]
+                        }
+                    </th>
+                    
+                    <td style="padding: 4px;">${handleObject(layer.feature.properties[columnname])
+                    }</td></tr>`
+                ).join(''))
+                +'</table>'
+            }, {"sticky": true});
+        
+    
+        function geo_json_aec158260c9f4d6598bf8d57aa9bdf10_styler(feature) {
+            switch(feature.id) {
+                default:
+                    return {"fillColor": "#ff0000", "fillOpacity": 0.75, "weight": 1};
+            }
+        }
+        function geo_json_aec158260c9f4d6598bf8d57aa9bdf10_onEachFeature(feature, layer) {
+            layer.on({
+                click: function(e) {
+                    map_c3304d2c71b34d9ba19417c19655d592.fitBounds(e.target.getBounds());
+                }
+            });
+        };
+        var geo_json_aec158260c9f4d6598bf8d57aa9bdf10 = L.geoJson(null, {
+                onEachFeature: geo_json_aec158260c9f4d6598bf8d57aa9bdf10_onEachFeature,
+            
+                style: geo_json_aec158260c9f4d6598bf8d57aa9bdf10_styler,
+        }).addTo(map_c3304d2c71b34d9ba19417c19655d592);
+            geo_json_aec158260c9f4d6598bf8d57aa9bdf10.addData({"features": [{"geometry": {"coordinates": [[[34.7415784086382, 32.02619401997845], [34.74158643826395, 32.02625137773373], [34.74194650265123, 32.02626927650068], [34.741953663705544, 32.02615765181804], [34.741706041894595, 32.02614458590104], [34.7415784086382, 32.02619401997845]]], "type": "Polygon"}, "id": "0", "properties": {"AgentBldAdd": 0, "AvrgTotaalArea": 0.0, "New Total Residence": 0.0, "Old Total Residence": 0.0, "Percent Left": 0.0, "Percent New Comers": 0.0, "Purchase": 0.0, "Rent": 0.0, "TotalFloors": 0.0, "TotalUnits": 0.0, "Type of Project": 0, "address_text": 0, "bld_address": 0, "bld_id": "220_2", "laeving": 0.0, "new comers": 0.0, "newMaintenace": 0.0, "staying": 0.0}, "type": "Feature"}, {"geometry": {"coordinates": [[[34.741943105607156, 32.026322225617974], [34.74166687622489, 32.02630853089438], [34.7416604951275, 32.02648283844762], [34.74166039958506, 32.02648541858452], [34.7419235033156, 32.02649857081587], [34.74192593250013, 32.02649533373144], [34.74193002930502, 32.026487932074694], [34.74193255516058, 32.026480036814675], [34.74193335156092, 32.02647425106569], [34.741943105607156, 32.026322225617974]]], "type": "Polygon"}, "id": "1", "properties": {"AgentBldAdd": "215_2", "AvrgTotaalArea": 120.0, "New Total Residence": 102.0, "Old Total Residence": 24.0, "Percent Left": 0.4583333333333333, "Percent New Comers": 0.8725490196078431, "Purchase": 3072384.0, "Rent": 65250.0, "TotalFloors": 32.0, "TotalUnits": 102.0, "Type of Project": "\u05ea\u05d1\u05f4\u05e2 \u05e4\u05d9\u05e0\u05d5\u05d9 \u05d1\u05d9\u05e0\u05d5\u05d9", "address_text": "\u05e8\u05d5\u05d8\u05e9\u05d9\u05dc\u05d32 \u05d5\u05e1\u05d5\u05e7\u05dc\u05d5\u05d1 2, \u05d1\u05ea \u05d9\u05dd", "bld_address": "215_2", "bld_id": "215_2", "laeving": 11.0, "new comers": 89.0, "newMaintenace": 450.0, "staying": 13.0}, "type": "Feature"}], "type": "FeatureCollection"});
+        
+    
+        geo_json_aec158260c9f4d6598bf8d57aa9bdf10.bindTooltip(
+            function(layer){
+            // Convert non-primitive to String.
+            let handleObject = (feature)=>typeof(feature)=='object' ? JSON.stringify(feature) : feature;
+            let fields = ["bld_id", "laeving", "new comers", "staying", "New Total Residence", "Old Total Residence", "Percent Left", "Percent New Comers", "Type of Project", "TotalUnits", "TotalFloors", "AvrgTotaalArea", "newMaintenace", "Purchase", "Rent", "address_text"];
+            let aliases = ["Building Code:", "Leaving:", "Number of new comers:", "Number of staying:", "New Total Residence:", "Old Total Residence:", "Percent Left:", "Percent new comers:", "Type of project:", "Units:", "Floors:", "Average Area:", "Maintenance Cost:", "Purchase:", "Rent and Maintence:", "Address:"];
+            return '<table>' +
+            String(
+                fields.map(
+                columnname=>
+                    `<tr style="text-align: left;">
+                    <th style="padding: 4px; padding-right: 10px;">
+                        ${aliases[fields.indexOf(columnname)]
+                        }
+                    </th>
+                    
+                    <td style="padding: 4px;">${handleObject(layer.feature.properties[columnname])
+                    }</td></tr>`
+                ).join(''))
+                +'</table>'
+            }, {"sticky": true});
+        
+    
+        function geo_json_8c3557c99afe4b49a0146fea88495111_styler(feature) {
+            switch(feature.id) {
+                default:
+                    return {"fillColor": "#ff0000", "fillOpacity": 0.75, "weight": 1};
+            }
+        }
+        function geo_json_8c3557c99afe4b49a0146fea88495111_onEachFeature(feature, layer) {
+            layer.on({
+                click: function(e) {
+                    map_c3304d2c71b34d9ba19417c19655d592.fitBounds(e.target.getBounds());
+                }
+            });
+        };
+        var geo_json_8c3557c99afe4b49a0146fea88495111 = L.geoJson(null, {
+                onEachFeature: geo_json_8c3557c99afe4b49a0146fea88495111_onEachFeature,
+            
+                style: geo_json_8c3557c99afe4b49a0146fea88495111_styler,
+        }).addTo(map_c3304d2c71b34d9ba19417c19655d592);
+            geo_json_8c3557c99afe4b49a0146fea88495111.addData({"features": [{"geometry": {"coordinates": [[[34.7428881740393, 32.03008892519753], [34.742944411502336, 32.03037870168247], [34.74294531889153, 32.03038167731219], [34.742945908518315, 32.03038278235858], [34.742946712016696, 32.03038378480994], [34.742947705545184, 32.03038465492148], [34.74294885962371, 32.030385366875166], [34.74295014000833, 32.030385899545806], [34.74295150870735, 32.03038623712794], [34.74295292510854, 32.030386369604784], [34.742956143455956, 32.03038619634088], [34.7432140490112, 32.030348955878075], [34.74311319080629, 32.03005559614739], [34.7428881740393, 32.03008892519753]]], "type": "Polygon"}, "id": "0", "properties": {"AgentBldAdd": "225_6", "AvrgTotaalArea": 120, "New Total Residence": 104, "Old Total Residence": 74, "Percent Left": 0.1621621621621622, "Percent New Comers": 0.4038461538461539, "Purchase": 3427200.0, "Rent": 65250.0, "TotalFloors": 32, "TotalUnits": 104, "Type of Project": "\u05ea\u05d1\u05f4\u05e2 \u05e4\u05d9\u05e0\u05d5\u05d9 \u05d1\u05d9\u05e0\u05d5\u05d9", "address_text": "\u05d3\u05d5\u05d3 \u05de\u05e1\u05d9\u05e7\u05d4 6, \u05d1\u05ea \u05d9\u05dd", "bld_address": "225_6", "bld_id": "225_6", "laeving": 12, "new comers": 42, "newMaintenace": 450, "staying": 62}, "type": "Feature"}, {"geometry": {"coordinates": [[[34.743218151350646, 32.0300400494815], [34.743319137841944, 32.03033378133951], [34.74359278676382, 32.0302942667535], [34.74360004692076, 32.03029267741494], [34.74360486521057, 32.03029085044577], [34.743609259270336, 32.030288365707676], [34.743613106485945, 32.03028529253612], [34.74361629950272, 32.03028171668654], [34.7436187492211, 32.03027773794122], [34.74362038728298, 32.03027346732525], [34.74362116797915, 32.030269024008064], [34.74362106952477, 32.03026453197828], [34.74362009466731, 32.030260116583776], [34.74361764724189, 32.03025446037847], [34.74347365788624, 32.03000220653604], [34.743218151350646, 32.0300400494815]]], "type": "Polygon"}, "id": "1", "properties": {"AgentBldAdd": "225_8", "AvrgTotaalArea": 120, "New Total Residence": 104, "Old Total Residence": 14, "Percent Left": 1.0, "Percent New Comers": 1.0, "Purchase": 3427200.0, "Rent": 65250.0, "TotalFloors": 32, "TotalUnits": 104, "Type of Project": "\u05ea\u05d1\u05f4\u05e2 \u05e4\u05d9\u05e0\u05d5\u05d9 \u05d1\u05d9\u05e0\u05d5\u05d9", "address_text": "\u05d3\u05d5\u05d3 \u05de\u05e1\u05d9\u05e7\u05d4 8, \u05d1\u05ea \u05d9\u05dd", "bld_address": "225_8", "bld_id": "225_8", "laeving": 14, "new comers": 104, "newMaintenace": 450, "staying": 0}, "type": "Feature"}], "type": "FeatureCollection"});
+        
+    
+        geo_json_8c3557c99afe4b49a0146fea88495111.bindTooltip(
             function(layer){
             // Convert non-primitive to String.
             let handleObject = (feature)=>typeof(feature)=='object' ? JSON.stringify(feature) : feature;
