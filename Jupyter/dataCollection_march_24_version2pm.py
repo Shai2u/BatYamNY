@@ -74,9 +74,6 @@ class DC:
         print('Iteration '+ str(i))
         currentBldg = self.script.loc[i]
         agents_path =self.cim_specific_path+self.agents_name.value
-        #all_bldgs = pd.DataFrame() # Place Holder for all buidlings
-        before_bldgs = pd.DataFrame() # place Holder for old buildings
-        after_bldgs = pd.DataFrame() # place holder for after buildings
 
         if (currentBldg.bld_operation < 3):
             current_bldg_ds = pd.DataFrame() #current Building Dataset
@@ -108,7 +105,7 @@ class DC:
         self.agents_format(agents_path) #format nicely the agents excel file
 
     def run_iterations(self):
-        for i in range(0,self.script.index[-1]+1):
+        for i in range(0,self.script.index[-1]):
             self.i_slider.value = i
             self.iterate()
 
@@ -166,8 +163,10 @@ class DC:
         ds['bldAdd']  = this_line['bld_address']
         ds['sellPerMeter'] = this_line.purchase_p
         ds['rentPerMeter'] = this_line.rent_price
+        
         ds['ArnonaTarif'] = float(self.rules['ArnonaTax'])
         ds['ArnonaTax'] = ds['ArnonaTarif'] * ds['AppSize']
+        
         ds['sellPrice'] = ds['AppSize'] * ds['sellPerMeter']
         ds['rentPerMonth'] = ds['AppSize'] * ds['rentPerMeter'] + this_line.Maintenace +  ds['ArnonaTax']
         ds['maintenace&Tax'] = this_line.Maintenace + ds['ArnonaTax']
@@ -177,10 +176,6 @@ class DC:
             ds['status'] = 'Old Building'
         else:
             ds['status'] = 'Demolished'
-        ds['renewd'] ='before'
-        ds['PlanID'] = this_line.FuturePlanID
-        ds['iteration'] = this_line['index']
-
         return ds
     
     def def_futureBld_op12_ds(self, this_line,currentBldg):
@@ -206,10 +201,6 @@ class DC:
             ds['status'] = 'Tama 38_1'
         else:
             ds['status'] = 'Tama 38_2'
-
-        ds['renewd'] ='after'
-        ds['PlanID'] = currentBldg.FuturePlanID
-        ds['iteration'] = currentBldg['index']
         return ds
 
     def iterate_case_3_current_building(self,last_line1,currentBldg,bldg_path,agents_path):
@@ -219,7 +210,7 @@ class DC:
                 subAgents_ds = pd.DataFrame()
             print(j)
             before_line = self.before_dem.loc[j]
-            current_bldg_ds = current_bldg_ds.append(self.def_currentBld_op3_ds(before_line,currentBldg))
+            current_bldg_ds = current_bldg_ds.append(self.def_currentBld_op3_ds(before_line))
             if (j==last_line1-1):
                 print('last line!')
                 bldg_path_before_xlsx =self.cim_specific_path + bldg_path + currentBldg.ExcelBefore
@@ -239,13 +230,13 @@ class DC:
         for j in range(0,last_line2):
             Future_bldg_ds = pd.DataFrame()
             after_line = self.after_dem.loc[j]
-            Future_bldg_ds = Future_bldg_ds.append(self.def_FutureBld_op3_ds(after_line,currentBldg))
+            Future_bldg_ds = Future_bldg_ds.append(self.def_FutureBld_op3_ds(after_line))
             if (j==last_line2-1):
                 bldg_path_after_xlsx = self.cim_specific_path + bldg_path + currentBldg.ExcelChange
                 Future_bldg_ds.reset_index(inplace=True)
                 Future_bldg_ds.to_excel(bldg_path_after_xlsx)
 
-    def def_currentBld_op3_ds(self,before_line,cb):
+    def def_currentBld_op3_ds(self,before_line):
         ds = pd.DataFrame()
         nUnits = before_line.OriginalUnits
         unitNumber = [k for k in range(nUnits)]
@@ -263,18 +254,15 @@ class DC:
         ds['rentPerMonth'] = ds['AppSize'] * ds['rentPerMeter'] + before_line.Maintenace +  ds['ArnonaTax']
         ds['maintenace&Tax'] = before_line.Maintenace +  ds['ArnonaTax']
         ds['status'] = 'Demolished'
-        ds['renewd'] ='before'
-        ds['PlanID'] = cb.FuturePlanID
-        ds['iteration'] = cb['index']
         return ds
 
 
-    def def_FutureBld_op3_ds(self,after_line,cb):
+    def def_FutureBld_op3_ds(self,after_line):
         ds = pd.DataFrame()
         nUnits = int(after_line.TotalUnits)
         unitNewNumber = [k for k in range(nUnits)]
         ds['appUnits'] = unitNewNumber
-        ds['bldAdd'] = after_line.bld_address +'n'
+        ds['bldAdd'] = after_line.bld_address
         ds['AppSize'] = after_line.AvrgTotaalArea
         ds['sellPerMeter'] = after_line.purchase_p * ( 1 + after_line.priceIncrease )
         ds['rentPerMeter'] = after_line.rent_price * ( 1 + after_line.rentIncrease )
@@ -288,9 +276,6 @@ class DC:
         
         ds['newMaintenace&Tax'] = after_line.newMaintenace + ds['ArnonaTax'] 
         ds['status'] = 'New Building'
-        ds['renewd'] ='after'
-        ds['PlanID'] = cb.FuturePlanID
-        ds['iteration'] = cb['index']
         return ds
             
 
