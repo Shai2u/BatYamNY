@@ -16,13 +16,13 @@ class DC:
         path_1 = 'library_march_24.json'
         with open(path_1) as json_file:
             self.library = json.load(json_file)
-        print_library = json.dumps(self.library, indent=2)
+        #print_library = json.dumps(self.library, indent=2)
 
         #rules dictionary file file
         path_2 = 'rules.json'
         with open(path_2) as json_file:
             self.rules = json.load(json_file)
-        print_rules = json.dumps(self.rules, indent=2)
+        #print_rules = json.dumps(self.rules, indent=2)
         #print('-----Rules File-------')
         #print(print_rules)
         #print('-----Rules Library-------')
@@ -30,7 +30,7 @@ class DC:
 
         ##-------------setup widgets-----------------------
         self.cim_name = widgets.Text(
-            value='cim_0324_0620',
+            value='cim_0325_0640',
             description='Simulation Name:',
             )
 
@@ -46,15 +46,24 @@ class DC:
         self.future_file = self.library['future_script']
         self.future_path = self.cim_specific_path+self.future_file
 
-        print(self.future_path)
+        #Future Polygon Script Path
 
-        print(self.script_path)
+        self.future_pol_file = self.library['future_polygons_script']
+        self.future_pol_path = self.cim_specific_path+self.future_pol_file
+
 
         self.script = pd.read_excel(self.script_path)
         self.script_ft =  pd.read_excel(self.future_path)
+        self.script_ft_pol = pd.read_excel(self.future_pol_path)
+
+        #Before and After File
+        self.bldg_path = self.library['bldg_path']
+        self.before_n_after_xlsx = self.cim_specific_path + self.bldg_path + 'before_n_after.xlsx'
 
     def initiating_agents(self):
         self.Agents = pd.DataFrame()
+        self.before_bldgs = pd.DataFrame() # place Holder for old buildings
+        self.after_bldgs = pd.DataFrame() # place holder for after buildings
         #Agents Widget
         self.agents_name = widgets.Text(
             value='agents.xlsx',
@@ -69,98 +78,80 @@ class DC:
         )
     
     def iterate(self):
+        # this function operates one iteration
+        # it determines the case
+            #create a list of current units
+            #create a list of future untis
+            # generates agents according to the percent of renters
+            #append all those list
 
         i = self.i_slider.value
         print('Iteration '+ str(i))
         currentBldg = self.script.loc[i]
-        agents_path =self.cim_specific_path+self.agents_name.value
+        self.agents_path =self.cim_specific_path+self.agents_name.value
         #all_bldgs = pd.DataFrame() # Place Holder for all buidlings
-        before_bldgs = pd.DataFrame() # place Holder for old buildings
-        after_bldgs = pd.DataFrame() # place holder for after buildings
 
         if (currentBldg.bld_operation < 3):
-            current_bldg_ds = pd.DataFrame() #current Building Dataset
-            Future_bldg_ds = pd.DataFrame()  #future Building Dataset
-            subAgents_ds = pd.DataFrame()    #subAgents Dataset
             # Need to create one list with all the buildings! think about Case 3
-            
             #original building
-            cb = self.iterate_case_12_original_building(currentBldg)
+            self.cb = self.def_currentBld_op12_ds(currentBldg) #prepare a list of original units
+            self.before_bldgs = self.before_bldgs.append(self.cb) #append the list to the grand list
             #Future building or construction
-            self.fb = self.iterate_case_12_future_building(currentBldg)
+            self.fb = self.iterate_case_12_future_building(currentBldg) #prepare a list of future units
+            self.after_bldgs = self.after_bldgs.append(self.fb) #append the list to the grand list
             #Update Agents
-            self.iterate_case_12_generateAgents(currentBldg,cb)
-
+            rent_percent = float(currentBldg['originalRentPercent'])
+            subAgents_ds = self.generateAgensts(self.cb,rent_percent)
+            self.Agents = self.Agents.append(subAgents_ds)
         else:
             print('oh oh operation 3!')
             #operation 3 means that it's a Polygon not a single building
-            [self.before_dem,self.after_dem] = self.iterate_case_3(currentBldg)
+            [self.before_dem,self.after_dem] = self.iterate_case_3(currentBldg) #grab a list of building in project before and after demolishen
 
-            bldg_path = self.library['bldg_path']
-            self.after_dem.reset_index(inplace=True)
-            last_line1 = len(self.before_dem.index)
+            #grab the number of rows for poejct before and after demolishen
+            last_line1 = len(self.before_dem.index) 
             last_line2 = len(self.after_dem.index)
-            agents_path =self.cim_specific_path+self.agents_name.value
 
-            self.iterate_case_3_current_building(last_line1,currentBldg,bldg_path,agents_path)
-            self.iterate_case_3_future_building(last_line2,currentBldg,bldg_path)
+            self.current_bldg_ds = self.iterate_case_3_current_building(last_line1,currentBldg) #prepare list of units
+            self.before_bldgs = self.before_bldgs.append(self.current_bldg_ds) # append list of units
+            subAgents_ds = self.generateAgensts(self.current_bldg_ds) # generate agents
+            self.Agents = self.Agents.append(subAgents_ds)           # append agents
 
-        self.agents_format(agents_path) #format nicely the agents excel file
-
+            self.future_bldg_ds = self.iterate_case_3_future_building(last_line2,currentBldg) #prepare units of future units
+            self.after_bldgs = self.after_bldgs.append(self.future_bldg_ds) #append them
+    
+    #run all iterations
     def run_iterations(self):
         for i in range(0,self.script.index[-1]+1):
             self.i_slider.value = i
             self.iterate()
+        self.agents_format() #format nicely the agents excel file
+        self.before_n_after = self.before_bldgs.append(self.after_bldgs)
+        self.before_n_after.to_excel(self.before_n_after_xlsx)
 
-    def iterate_case_12_original_building(self,currentBldg):
-        #helper function 
-        #original building
-        cb = self.def_currentBld_op12_ds(currentBldg)
-        bldg_path = self.library['bldg_path']
-        sp_bldg_before_path = self.cim_specific_path + bldg_path + currentBldg.ExcelBefore
-        cb.to_excel(sp_bldg_before_path) #Need to append in Long List
-        return cb
-    
+
+    #extract list of buildings fromTama 38 projects   
     def iterate_case_12_future_building(self,currentBldg):
         #helper function 
         #Future building
         futureBldg = self.script_ft[self.script_ft['bld_address']==currentBldg['bld_address']]
         fb = self.def_futureBld_op12_ds(futureBldg,currentBldg)
-        bldg_path = self.library['bldg_path']
-        sp_bldg_after_path = self.cim_specific_path + bldg_path + currentBldg.ExcelChange
-        fb.to_excel(sp_bldg_after_path)
         return fb
-    
-    def iterate_case_12_generateAgents(self,currentBldg,cb):
-        rent_percent = currentBldg['originalRentPercent']
-        ng = self.generateAgensts(cb,rent_percent)
-        self.Agents = self.Agents.append(ng)
-        self.Agents.reset_index(inplace=True)
-        self.Agents['AgentID'] = self.Agents.index
-        self.Agents = self.Agents[['AgentAppUnit', 'AgentBldAdd', 'AgentIncome', 'AgentWealth','AgentPurchaseThreshold', 'AgentRentThreshold', 'Age',
-            'OwnerShip', 'AgeGroup', 'Native_Seniority', 'Native_Group', 'AgentID']]
-        agents_path =self.cim_specific_path+self.agents_name.value
-        self.Agents.to_excel(agents_path)
 
-
-
+    #extract list of buildings before and after demolishen
     def iterate_case_3(self,currentBldg):
-        get_complex_xlsx = currentBldg.ExcelPolygon
-        bldg_path = self.library['bldg_path']
-        sp_bldg_folder_path = self.cim_specific_path + bldg_path
-        bldg_path_xlsx= sp_bldg_folder_path+get_complex_xlsx
-        print(bldg_path_xlsx)
-        inside_script = pd.read_excel(bldg_path_xlsx)
+        inside_script = self.script_ft_pol[self.script_ft_pol['FuturePlanID']==currentBldg.FuturePlanID]
         before_dem = inside_script[inside_script.status=='destroyed']
+        before_dem.reset_index(inplace=True)
         after_dem = inside_script[inside_script.status=='New Building']
+        after_dem.reset_index(inplace=True)
         return [before_dem,after_dem]
 
+    #generate dataset for existing building units
     def def_currentBld_op12_ds(self, this_line):
         ds = pd.DataFrame()
-        
         nUnits = this_line.OriginalUnits
         unitNumber = [k for k in range(nUnits)]
-        
         ds['appUnits'] = unitNumber
         ds['AppSize'] = this_line.OriginalHouseSize
         ds['bldAdd']  = this_line['bld_address']
@@ -172,7 +163,6 @@ class DC:
         ds['rentPerMonth'] = ds['AppSize'] * ds['rentPerMeter'] + this_line.Maintenace +  ds['ArnonaTax']
         ds['maintenace&Tax'] = this_line.Maintenace + ds['ArnonaTax']
         
-        
         if (this_line.bld_operation == 1):
             ds['status'] = 'Old Building'
         else:
@@ -182,7 +172,8 @@ class DC:
         ds['iteration'] = this_line['index']
 
         return ds
-    
+
+    #generate dataset for future building units   
     def def_futureBld_op12_ds(self, this_line,currentBldg):
         ds = pd.DataFrame()
         nUnits = int(this_line.TotalUnits)
@@ -192,59 +183,42 @@ class DC:
         ds['bldAdd'] = this_line.loc[indx]['bld_address']
         ds['AppSize'] = float(this_line.AvrgTotaalArea)
         ds['sellPerMeter'] = float(round(this_line.purchase_p * ( 1 + this_line.priceIncrease ),1))
-        ds['rentPerMeter'] = float(round(this_line.rent_price * ( 1 + this_line.rentIncrease ),1))
-        
+        ds['rentPerMeter'] = float(round(this_line.rent_price * ( 1 + this_line.rentIncrease ),1))  
         ds['ArnonaTarif'] = float(self.rules['ArnonaTax'])
         ds['ArnonaTax'] = round(ds['ArnonaTarif'] * ds['AppSize'],1)
-        
         ds['sellPrice'] = round(ds['AppSize'] * ds['sellPerMeter'],1)
         ds['rentPerMonth'] = round(ds['AppSize'] * ds['rentPerMeter'] + float(this_line.newMaintenace) + ds['ArnonaTax'],1)
-        
         ds['newMaintenace&Tax'] = ds['ArnonaTax']  + float(this_line.newMaintenace)
         #ds['newMaintenace&Tax'] = ds['ArnonaTax'] 
         if (currentBldg.bld_operation ==1 ):
             ds['status'] = 'Tama 38_1'
         else:
             ds['status'] = 'Tama 38_2'
-
         ds['renewd'] ='after'
         ds['PlanID'] = currentBldg.FuturePlanID
         ds['iteration'] = currentBldg['index']
         return ds
-
-    def iterate_case_3_current_building(self,last_line1,currentBldg,bldg_path,agents_path):
+    
+    #iterate for every building in current complex buildings
+    def iterate_case_3_current_building(self,last_line1,currentBldg):
+        current_bldg_ds = pd.DataFrame()
+        subAgents_ds = pd.DataFrame()
         for j in range(0,last_line1):
-            if (j==0):
-                current_bldg_ds = pd.DataFrame()
-                subAgents_ds = pd.DataFrame()
             print(j)
             before_line = self.before_dem.loc[j]
             current_bldg_ds = current_bldg_ds.append(self.def_currentBld_op3_ds(before_line,currentBldg))
-            if (j==last_line1-1):
-                print('last line!')
-                bldg_path_before_xlsx =self.cim_specific_path + bldg_path + currentBldg.ExcelBefore
-                current_bldg_ds.reset_index(inplace=True)
-                current_bldg_ds.to_excel(bldg_path_before_xlsx)
-                subAgents_ds = self.generateAgensts(current_bldg_ds)
+        return(current_bldg_ds)
 
-                self.Agents = self.Agents.append(subAgents_ds)
-                self.Agents.reset_index(inplace=True)
-                self.Agents['AgentID'] = self.Agents.index
-                self.Agents = self.Agents[['AgentAppUnit', 'AgentBldAdd', 'AgentIncome', 'AgentWealth','AgentPurchaseThreshold', 'AgentRentThreshold', 'Age',
-                    'OwnerShip', 'AgeGroup', 'Native_Seniority', 'Native_Group', 'AgentID']]
-                self.Agents.to_excel(agents_path) # No Need to save every Iteration.
-
-
-    def iterate_case_3_future_building(self,last_line2,currentBldg,bldg_path):
+    #iterate for every building in the new taba project
+    def iterate_case_3_future_building(self,last_line2,currentBldg):
         for j in range(0,last_line2):
             Future_bldg_ds = pd.DataFrame()
             after_line = self.after_dem.loc[j]
             Future_bldg_ds = Future_bldg_ds.append(self.def_FutureBld_op3_ds(after_line,currentBldg))
-            if (j==last_line2-1):
-                bldg_path_after_xlsx = self.cim_specific_path + bldg_path + currentBldg.ExcelChange
-                Future_bldg_ds.reset_index(inplace=True)
-                Future_bldg_ds.to_excel(bldg_path_after_xlsx)
 
+        return Future_bldg_ds
+
+    #Generate units in housing projects that are fate is to be demolished
     def def_currentBld_op3_ds(self,before_line,cb):
         ds = pd.DataFrame()
         nUnits = before_line.OriginalUnits
@@ -268,7 +242,7 @@ class DC:
         ds['iteration'] = cb['index']
         return ds
 
-
+    #Generate new units in the new Taba Projects
     def def_FutureBld_op3_ds(self,after_line,cb):
         ds = pd.DataFrame()
         nUnits = int(after_line.TotalUnits)
@@ -292,8 +266,8 @@ class DC:
         ds['PlanID'] = cb.FuturePlanID
         ds['iteration'] = cb['index']
         return ds
-            
-
+   
+    #Based on the percentage of renters and the current listing of units, generate new agents           
     def generateAgensts(self, thisDS, per = 0.5):
         nUnits = len(thisDS['appUnits'])
         #unitNumber = [k for k in range(nUnits)]
@@ -315,8 +289,8 @@ class DC:
         ds = pd.DataFrame()
         
         ds['OwnerShip'] = pd.Series(ownership)
-        ds['AgentAppUnit'] = thisDS['appUnits'] #what unit does the agent live in
-        ds['AgentBldAdd'] = thisDS['bldAdd'] # in what bld address does the Agent live in
+        ds['AgentAppUnit'] = thisDS['appUnits'].to_list() #what unit does the agent live in
+        ds['AgentBldAdd'] = thisDS['bldAdd'].to_list() # in what bld address does the Agent live in
     
         ds['AgentWealth'] = pd.Series(rand_wealth)
         
@@ -328,12 +302,14 @@ class DC:
         ds['Native_Group'] = ds['Native_Seniority'].apply(lambda x: 0 if x < 10 else 1) # 0 Native, 1 NewComer
         
         # for renters take the rent price
-        ds.loc[ds['OwnerShip']==0,'AgentIncome'] = (thisDS[ds['OwnerShip']==0]['rentPerMonth'])/0.3 + rand_inc_sr_rent[ds['OwnerShip']==0]
-        ds.loc[ds['OwnerShip']==1,'AgentIncome'] = (thisDS[ds['OwnerShip']==1]['maintenace&Tax'])/0.3 + rand_inc_sr_own[ds['OwnerShip']==1]
-        ds['AgentRentThreshold'] = ds['AgentIncome'] * 0.3 # 30% of income
+        thisDS.reset_index(inplace=True)
+        ds.loc[ds['OwnerShip']==0,'AgentIncome'] = ((thisDS[ds['OwnerShip']==0]['rentPerMonth'])/0.3 + rand_inc_sr_rent[ds['OwnerShip']==0]).to_list()
+        ds.loc[ds['OwnerShip']==1,'AgentIncome'] = ((thisDS[ds['OwnerShip']==1]['maintenace&Tax'])/0.3 + rand_inc_sr_own[ds['OwnerShip']==1]).to_list()
+        ds['AgentRentThreshold'] = (ds['AgentIncome'] * 0.3).to_list() # 30% of income
         return ds
 
-    def agents_format(self,agents_path):
+    #Format The agents so the excel sheet will look better
+    def agents_format(self):
         self.Agents['AgentIncome'] = self.Agents['AgentIncome'].astype(int)
         #Age Formating
         self.Agents['AgeGroupDesc'] = self.Agents['Age'].apply(lambda x: 'Young' if x < 65 else 'Old')
@@ -346,7 +322,10 @@ class DC:
         HighInc = int(self.rules['Income']['High']['2'])
         self.Agents['IncomeNum'] = self.Agents['AgentIncome'].apply(lambda x: "0" if x < LowInc else "1" if x < MediumInc else "2")
         self.Agents['IncomeDesc'] = self.Agents['AgentIncome'].apply(lambda x: 'Low Income' if x < LowInc else 'Medium Income' if x < MediumInc else "High Income")
-        self.Agents.to_excel(agents_path)
+        #self.Agents.drop(columns='level_0',inplace=True)
+        self.Agents.reset_index(drop=True,inplace=True)
+        self.Agents['AgentID'] = self.Agents.index
+        self.Agents.to_excel(self.agents_path)
 
     @staticmethod
     def getRandomSeniority(age):

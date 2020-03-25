@@ -28,6 +28,7 @@
 "script_file" : "data/script_ssi.xlsx",
 "script_file_old" : "Source/data/script/script_ssi_march_8_535pm.xlsx",
 "future_script" : "data/FutureBldgs_Tama_38.xlsx",
+"future_polygons_script": "data/FutureBldgs_polygon.xlsx",
 "Buildings_ref":"data/Building_flat.xlsx",
 "Future_ref":"data/FutureBldgs_All.xlsx",
 "bldg_path" : "data/bldg/",
