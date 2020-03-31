@@ -13,7 +13,7 @@ class DC:
     def __init__(self):
         #reference dictionary file
         #----------------------Loading Library and rule files
-        path_1 = 'library_march_24.json'
+        path_1 = 'library_march_28.json'
         with open(path_1) as json_file:
             self.library = json.load(json_file)
         #print_library = json.dumps(self.library, indent=2)
@@ -248,7 +248,7 @@ class DC:
         nUnits = int(after_line.TotalUnits)
         unitNewNumber = [k for k in range(nUnits)]
         ds['appUnits'] = unitNewNumber
-        ds['bldAdd'] = after_line.bld_address +'n'
+        ds['bldAdd'] = after_line.bld_address +'n' #Bug
         ds['AppSize'] = after_line.AvrgTotaalArea
         ds['sellPerMeter'] = after_line.purchase_p * ( 1 + after_line.priceIncrease )
         ds['rentPerMeter'] = after_line.rent_price * ( 1 + after_line.rentIncrease )

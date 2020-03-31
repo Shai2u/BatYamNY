@@ -1,0 +1,38 @@
+
+{"GIS_package":
+        {
+            "old_bldgs":
+            {
+                "package" : "/Users/shai/Google Drive/BatYam NY DRIVE/Simulations/March 14 GitHUB/QGIS/base_layers.gpkg",
+                "layer" : "bldgs_renewal_2020",
+                "database":"base_layers",
+                "feature": "bldgs_renewal_2020"
+            },
+            "old_bldgs_background":
+            {
+                "package" : "/Users/shai/Google Drive/BatYam NY DRIVE/Simulations/March 14 GitHUB/QGIS/base_layers.gpkg",
+                "layer" : "bldgs_nonrenewal_2020",
+                "database":"base_layers",
+                "feature" : "bldgs_nonrenewal_2020"
+
+            }
+            ,
+            "updated_bldg":
+            {
+                "package" : "/Users/shai/Google Drive/BatYam NY DRIVE/Simulations/March 14 GitHUB/QGIS/sim_updated.gpkg",
+                "layer" : "all_updated",
+                "database":"sim_updated",
+                "feature":"accumulated"
+            }
+        },
+"script_file" : "data/script_ssi.xlsx",
+"future_script" : "data/FutureBldgs_Tama_38.xlsx",
+"future_polygons_script": "data/FutureBldgs_polygon.xlsx",
+"Buildings_ref":"data/bldg_dictionary.xlsx",
+"before_n_after":"data/bldg/before_n_after.xlsx",
+"old_building_ref":"data/old_bldgs.xlsx",
+"Future_ref":"data/FutureBldgs_All.xlsx",
+"bldg_path" : "data/bldg/",
+"Agents": "Source/Agents_8pm.xlsx",
+"cim_folder":"simulationID/"
+}
