@@ -63,6 +63,12 @@ class SSI:
             disabled=False,
             indent=False
             )
+        self.infoText = widgets.Textarea(
+            value='',
+            placeholder='',
+            description='',
+            disabled=False
+            )
    
     #This function Loads the Old Bldgs, backgrodund bldgs and the updated buildings
     def init_gis(self):
@@ -228,12 +234,12 @@ class SSI:
         'AgeGroupDesc', 'NativeDesc', 'OwnershipDesc', 'IncomeNum',
         'IncomeDesc']]
         #adding Threshold ability to stay for each agent and inital status
-        self.agent_0 = SSI.updateAgentsThresholdData(self.agent_0,'staying')
+        self.agent_0 = self.updateAgentsThresholdData(self.agent_0,'staying')
         # creating a dateset for the excel files that will be saved
-        self.itr_agents_excel_ds = pd.DataFrame()
-        self.itr_bldg_excel_ds = pd.DataFrame()
-        self.itr_accumulated_bldg_excel_ds = pd.DataFrame()
-        self.itr_geokpackage_ds = pd.DataFrame()
+        #self.itr_agents_excel_ds = pd.DataFrame()
+        #self.itr_bldg_excel_ds = pd.DataFrame()
+        #self.itr_accumulated_bldg_excel_ds = pd.DataFrame()
+        #self.itr_geokpackage_ds = pd.DataFrame()
         self.PopNum_forID = len(self.agent_0.index)
 
     
@@ -247,13 +253,15 @@ class SSI:
             self.agent_i = self.agent_0.copy()
 
         if (self.typeOperation<3):
-            print('operation 1 or 2')
+            
+            self.infoText.value = self.infoText.value + "\n\n operation 1 or 2"
             self.operation_12()
 
         else:
-            print('operation 3')
+            self.infoText.value = self.infoText.value + "\n\n operation 3"
             self.operation_3()
         self.operation_post_123(i)
+        
 
     #run all iterations
     def iterateAll(self):
@@ -261,11 +269,11 @@ class SSI:
         for j in range(l_op):
             self.itr_slider.value = j
             self.iterate()
+        self.saveAgentsExcel()
     
     #helper function pre operation for operations 12 and 3
     def operation_pre_123(self,i):
-
-        print("Iteration Number: " + str(i))
+        self.infoText.value = self.infoText.value + "\n Iteration Number: " + str(i)
         # reference of the next row
         self.next_row = self.script_file.loc[i]
         #step 4.1: grabing the next row in script file, and getting a refenrence of the excel file
@@ -277,8 +285,10 @@ class SSI:
         self.bld_add_or_complex = self.next_row['bld_address']
         self.typeProject = self.next_row['TypeTitle']
         self.typeOperation = self.next_row['bld_operation']
-        print('Address or complex: ' + self.bld_add_or_complex)
-        print('Type of project ' + self.typeProject)
+        
+        self.infoText.value = self.infoText.value + '\n Address or complex: ' + self.bld_add_or_complex
+        self.infoText.value = self.infoText.value + '\n Type of project ' + self.typeProject
+
         #list of buildings
         self.list_of_bldgs = self.before_buildings.bldAdd.unique().tolist()
         self.list_of_bldgs_after = self.after_buildings.bldAdd.unique().tolist()
@@ -473,20 +483,17 @@ class SSI:
         ds['BuyTreshold'] = ds['AgentWealth']*0.3
         ds['Agent_status'] = status #staying, leaving,newComers buying always starts with staying
         return ds
+    
+    def saveAgentsExcel(self): 
+        #simulation_folder
+        simulation_path = self.sim_folder+self.simulation_name.value+"/"
+        if not os.path.exists(simulation_path):
+            os.mkdir(simulation_path)
 
+        excel_file_name = 'agents_ssi.xlsx'
+        excel_path = simulation_path+excel_file_name
+        self.agents_all_iterations.to_excel(excel_path)
 
-
-
-    #Helper Function
-    @staticmethod
-    def updateAgentsThresholdData(ds,status):
-        #This function recieves a Agent Dataset
-        #The function returns the agents ability to live in a certain building as column data
-        ds['TaxAndMainTreshold'] = ds['AgentIncome']*0.3
-        ds['RentTreshold'] = ds['AgentIncome']*0.3
-        ds['BuyTreshold'] = ds['AgentWealth']*0.3
-        ds['Agent_status'] = status #staying, leaving,newComers buying always starts with staying
-        return ds
     #Convert From ESPG 2039 (Israel TM Grid) to ESPG 4326 (WGS 84)
     @staticmethod
     def Convert_2039_2_4326(feature):
