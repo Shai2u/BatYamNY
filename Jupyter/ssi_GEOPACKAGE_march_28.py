@@ -300,13 +300,13 @@ class SSI:
         self.active_rows = self.agent_i.AgentBldAdd.isin(self.list_of_bldgs) #bofre Case 1-2 and Case 3
         self.active_rows_renters =  (self.active_rows & (self.agent_i['OwnerShip']==0)) #renters they all go!
         self.active_rows_owners =  (self.active_rows & (self.agent_i['OwnerShip']==1)) #owners go if their income is insufficent
-        self.agent_i_merge.loc[self.active_rows_renters,'Agent_status']='laeving'
+        self.agent_i_merge.loc[self.active_rows_renters,'Agent_status']='leaving'
 
         self.agent_tax_ability = self.agent_i_merge[self.active_rows]['TaxAndMainTreshold']
         self.bld_expenses_price =  self.agent_i_merge[self.active_rows]['newMaintenace&Tax']
         self.agent_i_merge.loc[self.active_rows,'Can stay if own'] = (self.agent_tax_ability > self.bld_expenses_price)
         self.active_rows_owners_cannotStay =  (self.active_rows_owners & (self.agent_i_merge['Can stay if own']==False)) #both Owners who can't pay will leave
-        self.agent_i_merge.loc[self.active_rows_owners_cannotStay,'Agent_status']='laeving'
+        self.agent_i_merge.loc[self.active_rows_owners_cannotStay,'Agent_status']='leaving'
 
         Current_residents_who_stay_rows = (self.active_rows & (self.agent_i_merge['Agent_status']=="staying"))
         crwsr = Current_residents_who_stay_rows #short writing
@@ -331,7 +331,7 @@ class SSI:
         self.active_rows = self.agent_i.AgentBldAdd.isin(self.list_of_bldgs) #choose tennats who live in these projects
         self.active_rows_renters =  (self.active_rows & (self.agent_i['OwnerShip']==0)) #renters they all go!
         self.active_rows_owners =  (self.active_rows & (self.agent_i['OwnerShip']==1)) #owners go if their income is insufficent
-        self.agent_i_merge.loc[self.active_rows_renters,'Agent_status']='laeving' #mark renters as agents who will move out
+        self.agent_i_merge.loc[self.active_rows_renters,'Agent_status']='leaving' #mark renters as agents who will move out
 
         # 1. get only active owners - tenets who own their property and future will be determine on their income...
         
