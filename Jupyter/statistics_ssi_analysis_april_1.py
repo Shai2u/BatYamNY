@@ -17,6 +17,9 @@ import geopandas as gpd
 from ipywidgets import interact, interactive, fixed, interact_manual
 from ssi_GEOPACKAGE_march_28 import SSI
 import folium
+#webmap
+from gis_local_webmap import GIS_local_webmap
+from gis_operations import GIS_operations
 #import cufflinks as cf
 
 class SSA:
@@ -62,6 +65,14 @@ class SSA:
             disabled=False,
             indent=False
             )
+        
+        #Iteration Slider
+        self.itr_slider = widgets.IntSlider(
+            value=0,
+            description='Iteration',
+            min=0,
+            max=23
+            )
     
         #This function Loads the master script files
     
@@ -82,6 +93,7 @@ class SSA:
        'Agent_status', 'AgentID', 'projectID_itr', 'iteration']]
        
         self.num_of_iterations = np.max(self.agent_ref.iteration.unique())
+        self.itr_slider.max=self.num_of_iterations
         #This function Loads the Old Bldgs, backgrodund bldgs and the updated buildings
 
     def init_gis(self):
@@ -94,6 +106,8 @@ class SSA:
         self.old_bldgs = gpd.read_file(pack_old_bldg,layer = layer_old_bldg,driver='GPKG')
         self.old_bg_bldgs = gpd.read_file(pack_all_old_bldg,layer = layer_all_old_bldg,driver='GPKG')
         self.updated_bldgs = gpd.read_file(pack_updated_bldg,layer = layer_updated_bldg,driver='GPKG')
+        self.script_points_2039 = gpd.GeoDataFrame(self.script_file, geometry=gpd.points_from_xy(self.script_file.East, self.script_file.North),crs={'init': 'epsg:2039'})
+        self.script_points_wgs_84 = GIS_operations.get_wgs_84_point(self.script_points_2039)
 
     #This function displays the the original buildings Using Folium and displaying statistics to them
     def prepare_old_bldgs_map(self):
@@ -164,6 +178,14 @@ class SSA:
                                                             'Tax and Maintenace:'                                                   
                                                             ])
                     ).add_to(fmap)
+        return(fmap)
+
+    def display_map_point(self,i,fmap):
+        t_lat = self.script_points_wgs_84.loc[i].geometry.y
+        t_lng = self.script_points_wgs_84.loc[i].geometry.x
+        folium.Marker([t_lat,t_lng], popup="Address: " + self.script_points_wgs_84.loc[i]['Address Title']).add_to(fmap)
+        fmap.location = [t_lat,t_lng]
+        fmap.options['zoom']=18
         return(fmap)
 
     def pivot_stay_leave_project(self):
@@ -314,7 +336,7 @@ class SSA:
 
         self.staying_leaving = ad_percent2[['laeving','new comers','staying','Total Staying','new comers Percent','staying Percent']]
 
-    def scatter_plot_helper(self,x, options,percent):
+    def scatter_plot_helper(self,x, options,percent,w,h):
                     #theme=list(cf.themes.THEMES.keys()), 
                     #colorscale=list(cf.colors._scales_names.keys())
         if (options =='Age'):
@@ -343,7 +365,7 @@ class SSA:
         print(columnS)
         df = pd.DataFrame(self.accumulated_agents_stat[0:x], columns=columnS)
         fig_1 = df.iplot(asFigure=True, xTitle="Iteration",
-                            yTitle="Percent", title="Income Percent")
+                            yTitle="Percent", title="Income Percent", dimensions =(w,h))
         fig_1.show()
 
 
