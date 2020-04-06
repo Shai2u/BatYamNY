@@ -12,6 +12,12 @@ from IPython.display import HTML, display
 
 #Postgres
 import psycopg2  # (if it is postgres/postgis)
+import plotly.graph_objects as go
+import geopandas as gpd
+from ipywidgets import interact, interactive, fixed, interact_manual
+from ssi_GEOPACKAGE_march_28 import SSI
+import folium
+#import cufflinks as cf
 
 class SSA:
 
@@ -49,6 +55,13 @@ class SSA:
             value=sim_name,
             description='Simulation Name'
             )
+        #displays map before
+        self.before_map = widgets.Checkbox(
+            value=False,
+            description='Display Before Map?',
+            disabled=False,
+            indent=False
+            )
     
         #This function Loads the master script files
     
@@ -69,6 +82,89 @@ class SSA:
        'Agent_status', 'AgentID', 'projectID_itr', 'iteration']]
        
         self.num_of_iterations = np.max(self.agent_ref.iteration.unique())
+        #This function Loads the Old Bldgs, backgrodund bldgs and the updated buildings
+
+    def init_gis(self):
+        pack_old_bldg = self.library["GIS_package"]["old_bldgs"]["package"]
+        layer_old_bldg = self.library["GIS_package"]["old_bldgs"]["layer"]
+        pack_all_old_bldg = self.library["GIS_package"]["old_bldgs_background"]["package"]
+        layer_all_old_bldg = self.library["GIS_package"]["old_bldgs_background"]["layer"]
+        pack_updated_bldg = self.library["GIS_package"]["updated_bldg"]["package"]
+        layer_updated_bldg = self.library["GIS_package"]["updated_bldg"]["layer"]
+        self.old_bldgs = gpd.read_file(pack_old_bldg,layer = layer_old_bldg,driver='GPKG')
+        self.old_bg_bldgs = gpd.read_file(pack_all_old_bldg,layer = layer_all_old_bldg,driver='GPKG')
+        self.updated_bldgs = gpd.read_file(pack_updated_bldg,layer = layer_updated_bldg,driver='GPKG')
+
+    #This function displays the the original buildings Using Folium and displaying statistics to them
+    def prepare_old_bldgs_map(self):
+        ## TO DO need to prepare a new "Old Buildings" Excel file that lists the layers that are currently ready in the GIS with all the Data
+        old_bldg_path = self.sim_folder + self.library['old_building_ref']
+        bldg_list = pd.read_excel(old_bldg_path) ## Need to create a GIS file Generator to the files that are ready for production.
+
+        select_bldg = self.old_bldgs['bld_id'].isin(bldg_list.bld_address)
+        select_bldg_ds = self.old_bldgs[select_bldg][['bld_id','geometry']]
+        select_bldg_ds.reset_index(inplace=True, drop=True)
+        select_bldg_ds_join = pd.merge(select_bldg_ds,bldg_list,how='left',left_on='bld_id',right_on='bld_address')
+        self.select_bldg_wgs_84 = SSI.Convert_2039_2_4326(select_bldg_ds_join)
+        
+        #get center point
+        lon = self.select_bldg_wgs_84.geometry.centroid.x.mean()
+        lat = self.select_bldg_wgs_84.geometry.centroid.y.mean()
+
+        #add background buidling
+        fmap = self.createNewMap(lat,lon)
+        fmap = self.add2map_bldgs_to_renew(fmap)
+        return(fmap)
+
+
+        #creates a map of Bat Yam with the background buildings
+    def createNewMap(self , lat=32.02677, lon=34.74283):
+        #initate map
+        latlng=[lat, lon]
+        zoom = 16
+        fmap = folium.Map(latlng,zoom_start=zoom,tiles='cartodbpositron')
+        
+        old_all_bldgs_wgs84 = SSI.Convert_2039_2_4326(self.old_bg_bldgs)
+        gjson = old_all_bldgs_wgs84.to_json()
+        style_1 ={'fillOpacity': 0.25,'weight': 0,'fillColor': '##cc0000'}
+        folium.GeoJson(gjson,
+                    style_function = lambda x: style_1).add_to(fmap)
+        return(fmap)
+
+
+    def add2map_bldgs_to_renew(self,fmap):
+        gjson = self.select_bldg_wgs_84.to_json()
+        style_2 ={'fillOpacity': 0.75,'weight': 1,'fillColor': '#ff0000'}
+        folium.GeoJson(gjson,
+                    style_function = lambda x: style_2,
+                    tooltip=folium.GeoJsonTooltip(fields=['bld_address',
+                                                            'Address Title',
+                                                            'OriginalUnits',
+                                                            'OriginalFloors',
+                                                            'OriginalHouseSize',
+                                                            'originalRentPercent',
+                                                            'purchase_p',
+                                                            'rent_price',
+                                                            'Arnona',
+                                                            'Old_Purchase', 
+                                                            'OldRent',
+                                                            'Tax and Maintenace'
+                                                            ],
+                                                    aliases=['Building Address Code:',
+                                                            'Building Address:',
+                                                            'Number of Units:',
+                                                            'OriginalFloors:',
+                                                            'Average house size:',
+                                                            'Percent renters:',
+                                                            'Price Per Meter:',
+                                                            'Rent Per Meter:',
+                                                            'Arnona:',
+                                                            'Average Sell Price:', 
+                                                            'Average Rent Price:',
+                                                            'Tax and Maintenace:'                                                   
+                                                            ])
+                    ).add_to(fmap)
+        return(fmap)
 
     def pivot_stay_leave_project(self):
         agent_1 = self.agent_ref.copy()
@@ -217,5 +313,37 @@ class SSA:
         ad_percent2['staying Percent'] = ad_percent2['staying']/ad_percent2['Total Staying'] #staying
 
         self.staying_leaving = ad_percent2[['laeving','new comers','staying','Total Staying','new comers Percent','staying Percent']]
+
+    def scatter_plot_helper(self,x, options,percent):
+                    #theme=list(cf.themes.THEMES.keys()), 
+                    #colorscale=list(cf.colors._scales_names.keys())
+        if (options =='Age'):
+            if percent:
+                columnS=['Old Percent','Young Percent']
+            else:
+                columnS=['Old','Young']
+    
+        elif (options == 'Ownership'):
+            if percent:
+                columnS=['Owner Percent', 'Rent Percent']
+            else:
+                columnS= ['Owner', 'Rent']
+                        
+        elif (options =='New Comers'):
+            if percent:
+                columnS=['new comers Percent', 'staying Percent']
+            else:
+                columnS=['new comers', 'staying']
+        else:
+            if percent:
+                columnS=['High Income Percent', 'Medium Income Percnet','Low Income Percent']
+            else:
+                columnS=['High Income', 'Medium Income','Low Income']
+                
+        print(columnS)
+        df = pd.DataFrame(self.accumulated_agents_stat[0:x], columns=columnS)
+        fig_1 = df.iplot(asFigure=True, xTitle="Iteration",
+                            yTitle="Percent", title="Income Percent")
+        fig_1.show()
 
 
