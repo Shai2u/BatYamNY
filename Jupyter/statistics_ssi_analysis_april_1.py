@@ -187,6 +187,17 @@ class SSA:
         fmap.location = [t_lat,t_lng]
         fmap.options['zoom']=18
         return(fmap)
+    
+    def add_specific_building(self,i,fmap):
+        step_1 = self.updated_bldgs[self.updated_bldgs['FuturePlanID']==str(self.script_file.loc[i]['FuturePlanID'])]
+        layer = SSI.Convert_2039_2_4326(step_1)
+        #fmap = self.AddLayerChooseView(fmap, layer=specific_bldg_wgs84, lat = lat, lon=lon, zoom=18, option=1)
+        gjson = layer.to_json()
+        style_2 ={'fillOpacity': 0.25,'weight': 1,'fillColor': '#ff0000'}
+        tooltip1=folium.GeoJsonTooltip(fields=['bld_address'],aliases=['Building Address Code'])
+        folium.GeoJson(gjson,style_function = lambda x: style_2,tooltip=tooltip1).add_to(fmap)
+        return(fmap)
+    
 
     def pivot_stay_leave_project(self):
         agent_1 = self.agent_ref.copy()
