@@ -20,8 +20,9 @@
         <script src="https://js.arcgis.com/4.18/"></script>
 
         <script>
-            require(["esri/Map", "esri/layers/GeoJSONLayer", "esri/views/MapView"], function (
+            require(["esri/Map", "esri/views/SceneView", "esri/layers/GeoJSONLayer"], function (
                 Map,
+                SceneView,
                 GeoJSONLayer,
                 MapView
             ) {
@@ -29,40 +30,7 @@
                 // or a proxy is required.
                 const url = "https://raw.githubusercontent.com/Shai2u/simualtion_nov_2020_binder/main/json/bldgs_geojson_feb_8.geojson";
 
-                // Paste the url into a browser's address bar to download and view the attributes
-                // in the GeoJSON file. These attributes include:
-                // * mag - magnitude
-                // * type - earthquake or other event such as nuclear test
-                // * place - location of the event
-                // * time - the time of the event
-                // Use the Arcade Date() function to format time field into a human-readable format
 
-
-
-                // const renderer = {
-                //   type: "simple",
-                //   field: "mag",
-                //   symbol: {
-                //     type: "simple-marker",
-                //     color: "orange",
-                //     outline: {
-                //       color: "white"
-                //     }
-                //   },
-                //   visualVariables: [{
-                //     type: "size",
-                //     field: "mag",
-                //     stops: [{
-                //         value: 2.5,
-                //         size: "4px"
-                //       },
-                //       {
-                //         value: 8,
-                //         size: "40px"
-                //       }
-                //     ]
-                //   }]
-                // };
 
                 const geojsonLayer = new GeoJSONLayer({
                     url: url,
@@ -74,12 +42,9 @@
                     basemap: "gray-vector",
                     layers: [geojsonLayer]
                 });
-
-                const view = new MapView({
-                    container: "viewDiv",
-                    center: [-168, 46],
-                    zoom: 2,
-                    map: map
+                var view = new SceneView({
+                    container: "viewDiv", // Reference to the DOM node that will contain the view
+                    map: map // References the map object created in step 3
                 });
             });
 
