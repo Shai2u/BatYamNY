@@ -1,7 +1,5 @@
 ## Bat Yam NY Thesis Project
-Jupyterlab[![Binder]
-
-(https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Shai2u/BatYamNY/HEAD?urlpath=lab)
+Jupyterlab
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Shai2u/BatYamNY/master?urlpath=lab)
 
 
