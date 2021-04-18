@@ -1,4 +1,5 @@
 ## Bat Yam NY Thesis Project
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Shai2u/BatYamNY/HEAD)
 
 You can use the [editor on GitHub](https://github.com/Shai2u/BatYamNY/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
