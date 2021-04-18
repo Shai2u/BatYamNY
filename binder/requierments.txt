@@ -1,0 +1,10 @@
+plotly==4.14.3
+geopandas==0.9.0
+arcgis==1.8.5.post3
+numpy==1.18.5
+matplotlib==3.2.2
+ipywidgets==7.5.1
+geopandas==0.8.1
+branca==0.4.1
+xlrd==1.1.0
+openpyxl==3.0.5
