@@ -2,6 +2,9 @@
 Jupyterlab
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Shai2u/BatYamNY/master?urlpath=lab)
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Shai2u/BatYamNY/master?filepath=binder%2Fapril_18_folder%2FLabDash_april17.ipynb)
+
+
 
 You can use the [editor on GitHub](https://github.com/Shai2u/BatYamNY/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
